@@ -117,8 +117,8 @@ def submit(request, course_id):
     enrollment = Enrollment.objects.get(user=user, course=course)
     submission = Submission.objects.create(enrollment=enrollment)
     submitted_choices = extract_answers(request)
-    submission.choices = submitted_choices
-    submission.save()
+    submission.chocies.set(submitted_choices)
+    # submission.save()
 
     return HttpResponseRedirect(reverse(viewname='onlinecourse:show_exam_result', args=(course.id, submission.id,)))
 
@@ -145,7 +145,7 @@ def show_exam_result(request, course_id, submission_id):
     selected_choices = submission.chocies.all()
     grade = 0
     for choice_id in selected_choices:
-        if Choice.objects.get(pk=choice_id).is_correct == True:
+        if Choice.objects.get(pk=choice_id.id).is_correct == True:
             grade = grade + 1
     
     context = {}
